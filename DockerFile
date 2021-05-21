@@ -1,0 +1,11 @@
+# Берем node.js v8 в качестве родительского образа
+FROM node:12.18.4
+# Устанавливаем рабочую директорию
+WORKDIR /app
+# Копируем файлы yarn.lock и package.json в рабочую директорию
+COPY package.json yarn.lock /app/
+# Устанавливаем зависимости
+RUN yarn install
+# Открываем порт 3000
+EXPOSE 3000
+# Запускаем React-прило
