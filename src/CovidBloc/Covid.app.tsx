@@ -3,37 +3,37 @@ import { LineChart, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Line,Responsiv
 import 'antd/dist/antd.css';
 import { Button, DatePicker ,Row, Col , Card  ,Space,message,notification  } from 'antd';
 
+type allDateType ={
+    total:{
+        today_new_confirmed:number ,
+        today_new_deaths:number ,
+        today_new_recovered:number
+    }
+}
+type chartType ={
+    "name": number | string,
+    "Cтатистика по заболевшим": number,
+    "Cтатистика по умершим": number,
+    "Cтатистика по выздоровевшим": number
+
+}[]
 
 const CovidMainBloc = (params: any) => {
-    type allDate ={
-        total:{
-            today_new_confirmed:number ,
-            today_new_deaths:number ,
-            today_new_recovered:number
-        }
-    }
 
-    type chart ={
-        "name": number | string,
-        "Cтатистика по заболевшим": number,
-        "Cтатистика по умершим": number,
-        "Cтатистика по выздоровевшим": number
-
-    }[]
-    const [datas,setDatas] = useState<allDate>()
+    const [datas,setDatas] = useState<allDateType>()
     const { RangePicker } = DatePicker;
-    const [dataNumber, setDataNaber] = useState([])// получение дат из датапикера
-    const [dataChart, setDataChart] = useState<chart>();// передача статистики в граффик
+    const [dataNumber, setDataNumber] = useState([])// получение дат из датапикера
+    const [dataChart, setDataChart] = useState<chartType>();// передача статистики в граффик
 
     function onChange(date: any, dateString: any) { // получение значения датапикера
-        setDataNaber(dateString)
+        setDataNumber(dateString)
     }
     function inputValue() { // обработка инпута с данными
         console.log(dataNumber[0]) // проверка приходят ли данные
         console.log(dataNumber[1])
         // Уведомления
-        const openNotification:any = () => notification.open({ message:'Ожидайте пожалуйста выполняется запрос на сервер'})
-        const openNotificationError:any = () => notification.open({message:'ОШИБКА!!!',description:'Проверьте верно ли ввели данные или есть ли соединение с сервером'})
+        const openNotification:any = () => notification.open({ message:'Ожидайте,пожалуйста, выполняется запрос на сервер'})
+        const openNotificationError:any = () => notification.open({message:'ОШИБКА!!!',description:'Введите данные правильно!'})
         openNotification()
 
         const errorCatch:any = () => {
@@ -46,15 +46,16 @@ const CovidMainBloc = (params: any) => {
             .then(datas => {
                 console.log(datas)
                 const labels = Object.keys(datas.dates);
+                console.log(datas)
                 // перебор данных
-                setDatas(datas)
+              datas.total.today_new_confirmed  == undefined ? console.log('error'):  setDatas(datas)
                 const data = []
                 for (let label of labels) {
                     data.push({
                             "name": datas.dates[label].countries['Russia'].date,
-                            "Cтатистика по заболевшим": datas.dates[label].countries['Russia'].today_new_confirmed,
-                            "Cтатистика по умершим": datas.dates[label].countries['Russia'].today_new_deaths,
-                            "Cтатистика по выздоровевшим": datas.dates[label].countries['Russia'].today_new_recovered
+                            "Cтатистика по заболевшим": datas && datas.dates[label].countries['Russia'].today_new_confirmed,
+                            "Cтатистика по умершим": datas && datas.dates[label].countries['Russia'].today_new_deaths,
+                            "Cтатистика по выздоровевшим": datas && datas.dates[label].countries['Russia'].today_new_recovered
                         });
                     }
              data == undefined ? console.log('error'): setDataChart(data)
@@ -67,18 +68,19 @@ const CovidMainBloc = (params: any) => {
                 <Col span={12} offset={8}>
                     <h1>Статистика по России</h1>
                     <Space direction="vertical" size={12}>
-                        <RangePicker  onChange={onChange} /> <Button type="primary"  onClick={inputValue}>Получить статистику</Button>
+                        <RangePicker  onChange={onChange} />
+                        <Button type="primary"  onClick={inputValue}>Получить статистику</Button>
 
                     </Space>
                 </Col>
             </Row>
             <Row>
                 <Col span={5} offset={8}>
-                    {datas == undefined ? '' :  <Card title='Статистика по всему миру '  bordered={false} style={{width:400 , marginTop:50 }}>
+                    {datas && datas == undefined ? '' :  <Card title='Статистика по всему миру '  bordered={false} style={{width:400 , marginTop:50 }}>
                         <h1>За период {dataNumber[0]} - {dataNumber[1]}</h1>
-                        <p>Cтатистика по заболевшим: {datas !== undefined ? datas.total.today_new_confirmed: ''}</p>
-                        <p>Cтатистика по умершим: {datas !== undefined ? datas.total.today_new_deaths: ''}</p>
-                        <p>Cтатистика по выздоровевшим: {datas !== undefined ? datas.total.today_new_recovered: ''}</p>
+                        <p>Cтатистика по заболевшим: {datas !== undefined ? datas.total.today_new_confirmed : ''}</p>
+                        <p>Cтатистика по умершим: {datas !== undefined ? datas.total.today_new_deaths : ''}</p>
+                        <p>Cтатистика по выздоровевшим: {datas !== undefined ? datas.total.today_new_recovered : ''}</p>
                     </Card>}
                 </Col>
             </Row>
