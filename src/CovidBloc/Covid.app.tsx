@@ -48,7 +48,7 @@ const CovidMainBloc = (params: any) => {
                 const labels = Object.keys(datas.dates);
                 console.log(datas)
                 // перебор данных
-              datas.total.today_new_confirmed  == undefined ? console.log('error'):  setDatas(datas)
+              datas.total.today_new_confirmed  === undefined ? console.log('error') :  setDatas(datas)
                 const data = []
                 for (let label of labels) {
                     data.push({
@@ -58,9 +58,9 @@ const CovidMainBloc = (params: any) => {
                             "Cтатистика по выздоровевшим": datas && datas.dates[label].countries['Russia'].today_new_recovered
                         });
                     }
-             data == undefined ? console.log('error'): setDataChart(data)
+             data === undefined ? console.log('error'): setDataChart(data)
                 message.success('Данные получены');
-            }).catch((e) => errorCatch());
+            }).catch(() => errorCatch());
     }
     return (
         <>
@@ -76,7 +76,7 @@ const CovidMainBloc = (params: any) => {
             </Row>
             <Row>
                 <Col span={5} offset={8}>
-                    {datas && datas == undefined ? '' :  <Card title='Статистика по всему миру '  bordered={false} style={{width:400 , marginTop:50 }}>
+                    {datas === undefined ? '' :  <Card title='Статистика по всему миру '  bordered={false} style={{width:400 , marginTop:50 }}>
                         <h1>За период {dataNumber[0]} - {dataNumber[1]}</h1>
                         <p>Cтатистика по заболевшим: {datas !== undefined ? datas.total.today_new_confirmed : ''}</p>
                         <p>Cтатистика по умершим: {datas !== undefined ? datas.total.today_new_deaths : ''}</p>
@@ -86,7 +86,7 @@ const CovidMainBloc = (params: any) => {
             </Row>
             <Row>
                 <Col span={12} offset={4} style={{top:20}}>
-                    { dataChart == undefined ? '':  <ResponsiveContainer width="100%" height={400}>
+                    { dataChart === undefined ? '':  <ResponsiveContainer width="100%" height={400}>
                            <LineChart width={500} height={300} data={dataChart} margin={{ top: 100, right: 7, left: 5, bottom: 5 }} style={{backgroundColor:'#ffffff'}}>
                             <CartesianGrid strokeDasharray="3 3" />
                             <XAxis dataKey="name" />
